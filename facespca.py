@@ -67,6 +67,7 @@ imagetst= [imagetst[k,:]-meanimage for k in range(imagetst.shape[0])]
 U,S,V = np.linalg.svd(images,full_matrices = False)
 
 #Primera autocara...
+# reshape: Gives a new shape to an array without changing its data.
 eigen1 = (np.reshape(V[0,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)
 axes.imshow(eigen1,cmap='gray')

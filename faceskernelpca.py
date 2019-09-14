@@ -61,7 +61,8 @@ unoM = np.ones([trnno,trnno])/trnno
 K = K - np.dot(unoM,K) - np.dot(K,unoM) + np.dot(unoM,np.dot(K,unoM))
 
 
-#Autovalores y autovectores
+# Autovalores y autovectores (w = eigenvalues, alpha = eigenvectors in columns)
+# eigh: Return the eigenvalues and eigenvectors of a Hermitian or symmetric matrix
 w,alpha = np.linalg.eigh(K)
 lambdas = w/trnno
 lambdas = w
