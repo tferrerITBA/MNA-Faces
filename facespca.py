@@ -30,9 +30,13 @@ images = np.zeros([trnno,areasize])
 person = np.zeros([trnno,1])
 imno = 0
 per  = 0
+#Iterate over image person folders
 for dire in onlydirs:
+    #Iterate over image files
     for k in range(1,trnperper+1):
+        #Pixel matrix
         a = plt.imread(mypath + dire + '/{}'.format(k) + '.pgm')/255.0
+        #Reshape to vector for insertion in 'images'
         images[imno,:] = np.reshape(a,[1,areasize])
         person[imno,0] = per
         imno += 1
@@ -43,17 +47,20 @@ imagetst  = np.zeros([tstno,areasize])
 persontst = np.zeros([tstno,1])
 imno = 0
 per  = 0
+#Iterate over image person folders
 for dire in onlydirs:
+    #Iterate over last 'trnperper' image files
     for k in range(trnperper,10):
+        #Pixel matrix
         a = plt.imread(mypath + dire + '/{}'.format(k) + '.pgm')/255.0
+        #Reshape to vector for insertion in 'images'
         imagetst[imno,:]  = np.reshape(a,[1,areasize])
         persontst[imno,0] = per
         imno += 1
     per += 1
-
-
     
 #CARA MEDIA
+#Mean for pixel i using 'images' columns
 meanimage = np.mean(images,0)
 fig, axes = plt.subplots(1,1)
 axes.imshow(np.reshape(meanimage,[versize,horsize])*255,cmap='gray')
@@ -64,7 +71,22 @@ images  = [images[k,:]-meanimage for k in range(images.shape[0])]
 imagetst= [imagetst[k,:]-meanimage for k in range(imagetst.shape[0])]
 
 #PCA
+#Eigenvectors displayed horizontally in V
 U,S,V = np.linalg.svd(images,full_matrices = False)
+
+imagescov = np.cov(np.transpose(images))
+w, v = np.linalg.eig(imagescov)
+eigen1cov = (np.reshape(v[0,:],[versize,horsize]))*255
+fig, axes = plt.subplots(1,1)
+axes.imshow(eigen1cov,cmap='gray')
+fig.suptitle('Primera autocara')
+#print(imagescov)
+#L = np.dot(images, np.transpose(images))
+#w, v = np.linalg.eig(L)
+#eigen1prima = (np.reshape(np.dot(v[:,0], images),[versize,horsize]))*255
+#fig, axes = plt.subplots(1,1)
+#axes.imshow(eigen1prima,cmap='gray')
+#fig.suptitle('Primera autocara prima')
 
 #Primera autocara...
 # reshape: Gives a new shape to an array without changing its data.
@@ -82,7 +104,6 @@ eigen3 = (np.reshape(V[2,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)
 axes.imshow(eigen2,cmap='gray')
 fig.suptitle('Tercera autocara')
-
 
 nmax = V.shape[0]
 nmax = 100
