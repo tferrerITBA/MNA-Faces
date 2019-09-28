@@ -9,6 +9,7 @@ from os.path import join, isdir
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
+import sys
 
 mypath      = 'att_faces/'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
@@ -74,12 +75,33 @@ imagetst= [imagetst[k,:]-meanimage for k in range(imagetst.shape[0])]
 #Eigenvectors displayed horizontally in V
 U,S,V = np.linalg.svd(images,full_matrices = False)
 
-imagescov = np.cov(np.transpose(images))
-w, v = np.linalg.eig(imagescov)
-eigen1cov = (np.reshape(v[0,:],[versize,horsize]))*255
-fig, axes = plt.subplots(1,1)
-axes.imshow(eigen1cov,cmap='gray')
-fig.suptitle('Primera autocara')
+A = np.transpose(images)
+n, m = A.shape
+L = np.dot(images, A)
+
+eig_val_L, eig_vec_L = np.linalg.eigh(L)
+eig_vec_C = np.dot(A, eig_vec_L)
+
+# Ordenar autovectores de mayor a menor
+LEFT_RIGHT = 1
+flipped_eig_vec_C = np.flip(eig_vec_C, LEFT_RIGHT)
+for i in range(m):
+    flipped_eig_vec_C[:,i] /= np.linalg.norm(flipped_eig_vec_C[:,i])
+
+custom_eigen = (np.reshape(flipped_eig_vec_C[:,0],[versize,horsize]))*255
+fig_2, axes_2 = plt.subplots(1,1)
+axes_2.imshow(custom_eigen,cmap='gray')
+fig_2.suptitle('Custom autocara')
+
+print(flipped_eig_vec_C[0,0])
+print(V[0,0])
+
+# imagescov = np.cov(np.transpose(images))
+# w, v = np.linalg.eig(imagescov)
+# eigen1cov = (np.reshape(v[0,:],[versize,horsize]))*255
+# fig, axes = plt.subplots(1,1)
+# axes.imshow(eigen1cov,cmap='gray')
+# fig.suptitle('Primera autocara')
 #print(imagescov)
 #L = np.dot(images, np.transpose(images))
 #w, v = np.linalg.eig(L)
@@ -94,6 +116,10 @@ eigen1 = (np.reshape(V[0,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)
 axes.imshow(eigen1,cmap='gray')
 fig.suptitle('Primera autocara')
+
+plt.show()
+
+sys.exit(0)
 
 eigen2 = (np.reshape(V[1,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)
