@@ -10,6 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
 import sys
+from gram_schmidt import gram_schmidt, cmp_eigen
 
 mypath      = 'att_faces/'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
@@ -79,8 +80,22 @@ A = np.transpose(images)
 n, m = A.shape
 L = np.dot(images, A)
 
+A = np.array([[8., -2., 1.], [-1., 4., 0.], [1., -1., 2.]])
+last_R = np.zeros(A.shape)
+Q_prod = 1
+found_eigen = False
+
+while not found_eigen:
+    Q, R = gram_schmidt(A)
+    L = np.dot(R, Q)
+    Q_prod *= Q
+    found_eigen = cmp_eigen(last_R, R)
+
 eig_val_L, eig_vec_L = np.linalg.eigh(L)
 eig_vec_C = np.dot(A, eig_vec_L)
+
+print(Q_prod)
+sys.exit(0)
 
 # Ordenar autovectores de mayor a menor
 LEFT_RIGHT = 1
