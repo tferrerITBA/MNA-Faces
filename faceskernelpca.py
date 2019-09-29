@@ -74,39 +74,35 @@ lambdas = w
 A = K
 m,n = A.shape
 last_R = np.zeros(A.shape)
-eig_vec_L = 1
+eig_vec_K = 1
 found_eigen = False
 i = 0
 
 while not found_eigen:
     Q, R = gram_schmidt(A)
     A = np.dot(R, Q)
-    eig_vec_L = np.dot(eig_vec_L, Q)
+    eig_vec_K = np.dot(eig_vec_K, Q)
     found_eigen = cmp_eigen(last_R, R)
     last_R = R
     i += 1
 
-eig_vec_C = np.dot(A, eig_vec_L)
-
 for i in range(m):
-    eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
+    eig_vec_K[:,i] /= np.linalg.norm(eig_vec_K[:,i])
 
-sarasa = np.sort(np.diag(R))
+#sarasa = np.sort(np.diag(R))
 
-for col in range(eig_vec_C.shape[1]):
-    eig_vec_C[:,col] = eig_vec_C[:,col]/np.sqrt(sarasa[col])
-
-sys.exit(0)
+for col in range(eig_vec_K.shape[1]):
+    eig_vec_K[:,col] = eig_vec_K[:,col]/np.sqrt(R[col, col])
         
-lambdas = sarasa
-alpha = eig_vec_C
+lambdas = np.diag(R)
+alpha = eig_vec_K
 
 #Los autovalores vienen en orden descendente. Lo cambio 
-lambdas = np.flipud(lambdas)
-alpha   = np.fliplr(alpha)
+#lambdas = np.flipud(lambdas)
+#alpha   = np.fliplr(alpha)
 
-for col in range(alpha.shape[1]):
-    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
+#for col in range(alpha.shape[1]):
+#    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 #for col in range(alpha.shape[1]):
 #    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 

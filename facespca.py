@@ -103,8 +103,6 @@ print(i)
 
 for i in range(m):
     eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
-    if(i % 2 == 0):
-        eig_vec_C[:,i] = -eig_vec_C[:,i]
 
 # Ordenar autovectores de mayor a menor
 #LEFT_RIGHT = 1
