@@ -71,7 +71,7 @@ lambdas = w/trnno
 lambdas = w
 
 
-A = K
+A = np.copy(K)
 m,n = A.shape
 last_R = np.zeros(A.shape)
 eig_vec_K = 1
@@ -89,8 +89,6 @@ while not found_eigen:
 for i in range(m):
     eig_vec_K[:,i] /= np.linalg.norm(eig_vec_K[:,i])
 
-#sarasa = np.sort(np.diag(R))
-
 for col in range(eig_vec_K.shape[1]):
     eig_vec_K[:,col] = eig_vec_K[:,col]/np.sqrt(R[col, col])
         
@@ -101,8 +99,6 @@ alpha = eig_vec_K
 #lambdas = np.flipud(lambdas)
 #alpha   = np.fliplr(alpha)
 
-#for col in range(alpha.shape[1]):
-#    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 #for col in range(alpha.shape[1]):
 #    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 
