@@ -10,7 +10,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
 import sys
-from gram_schmidt import gram_schmidt, cmp_eigen
+from gram_schmidt import gram_schmidt, cmp_eigen, gramschmidt
 
 mypath      = 'att_faces/'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
@@ -80,7 +80,7 @@ A = np.transpose(images)
 n, m = A.shape
 L = np.dot(images, A)
 
-A = np.array([[16., -2., 1.], [-1., 8., 0.], [1., -1., 2.]])
+A = np.array([[52., 30., 49., 28.], [30., 50., 8., 44.], [49., 8., 46., 16.], [28., 44., 16., 22.]])
 last_R = np.zeros(A.shape)
 Q_prod = 1
 found_eigen = False
@@ -89,15 +89,16 @@ i = 0
 while not found_eigen:
     Q, R = gram_schmidt(A)
     A = np.dot(R, Q)
-    Q_prod *= Q
+    Q_prod = np.dot(Q_prod, Q)
     found_eigen = cmp_eigen(last_R, R)
     last_R = R
     i += 1
 
 # eig_val_L, eig_vec_L = np.linalg.eigh(L)
 # eig_vec_C = np.dot(A, eig_vec_L)
-
+    
 print(Q_prod)
+print(R)
 print(i)
 sys.exit(0)
 
