@@ -94,7 +94,9 @@ while not found_eigen:
     last_R = R
     i += 1
 
-# eig_val_L, eig_vec_L = np.linalg.eigh(L)
+
+#eig_val_L, eig_vec_L = np.linalg.eigh(L)
+
 eig_vec_C = np.dot(A, eig_vec_L)
     
 print(eig_vec_C)
@@ -103,8 +105,6 @@ print(i)
 
 for i in range(m):
     eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
-    if(i % 2 == 0):
-        eig_vec_C[:,i] = -eig_vec_C[:,i]
 
 # Ordenar autovectores de mayor a menor
 #LEFT_RIGHT = 1
@@ -134,9 +134,9 @@ for i in range(m):
 #axes.imshow(eigen1prima,cmap='gray')
 #fig.suptitle('Primera autocara prima')
 eigen1c = (np.reshape(eig_vec_C[:,0],[versize,horsize]))*255
-fig, axes = plt.subplots(1,1)
-axes.imshow(eigen1c,cmap='gray')
-fig.suptitle('Primera autocara con GS')
+fig2, axes2 = plt.subplots(1,1)
+axes2.imshow(eigen1c,cmap='gray')
+fig2.suptitle('Primera autocara con GS')
 
 #Primera autocara...
 # reshape: Gives a new shape to an array without changing its data.
