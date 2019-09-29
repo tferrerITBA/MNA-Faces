@@ -1,6 +1,6 @@
 import numpy as np
 
-EPSILON = 1e-10
+EPSILON = 1e-1
 
 
 def gram_schmidt(A):

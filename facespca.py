@@ -82,24 +82,27 @@ L = np.dot(images, A)
 
 #A = np.array([[60., 30., 20.], [30., 20., 15.], [20., 15., 12.]])
 last_R = np.zeros(A.shape)
-eig_vec_C = 1
+eig_vec_L = 1
 found_eigen = False
 i = 0
 
 while not found_eigen:
     Q, R = gram_schmidt(L)
     L = np.dot(R, Q)
-    eig_vec_C = np.dot(eig_vec_C, Q)
+    eig_vec_L = np.dot(eig_vec_L, Q)
     found_eigen = cmp_eigen(last_R, R)
     last_R = R
     i += 1
 
-# eig_val_L, eig_vec_L = np.linalg.eigh(L)
-# eig_vec_C = np.dot(A, eig_vec_L)
+#eig_val_L, eig_vec_L = np.linalg.eigh(L)
+eig_vec_C = np.dot(A, eig_vec_L)
     
 print(eig_vec_C)
 print(R)
 print(i)
+
+for i in range(m):
+    eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
 
 # Ordenar autovectores de mayor a menor
 #LEFT_RIGHT = 1
@@ -128,10 +131,10 @@ print(i)
 #fig, axes = plt.subplots(1,1)
 #axes.imshow(eigen1prima,cmap='gray')
 #fig.suptitle('Primera autocara prima')
-eigen1c = (np.reshape(eig_vec_C[0,:],[versize,horsize]))*255
-fig, axes = plt.subplots(1,1)
-axes.imshow(eigen1c,cmap='gray')
-fig.suptitle('Primera autocara con GS')
+eigen1c = (np.reshape(eig_vec_C[:,0],[versize,horsize]))*255
+fig2, axes2 = plt.subplots(1,1)
+axes2.imshow(eigen1c,cmap='gray')
+fig2.suptitle('Primera autocara con GS')
 
 #Primera autocara...
 # reshape: Gives a new shape to an array without changing its data.
