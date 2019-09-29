@@ -80,16 +80,16 @@ A = np.transpose(images)
 n, m = A.shape
 L = np.dot(images, A)
 
-A = np.array([[52., 30., 49., 28.], [30., 50., 8., 44.], [49., 8., 46., 16.], [28., 44., 16., 22.]])
+#A = np.array([[60., 30., 20.], [30., 20., 15.], [20., 15., 12.]])
 last_R = np.zeros(A.shape)
-Q_prod = 1
+eig_vec_C = 1
 found_eigen = False
 i = 0
 
 while not found_eigen:
-    Q, R = gram_schmidt(A)
-    A = np.dot(R, Q)
-    Q_prod = np.dot(Q_prod, Q)
+    Q, R = gram_schmidt(L)
+    L = np.dot(R, Q)
+    eig_vec_C = np.dot(eig_vec_C, Q)
     found_eigen = cmp_eigen(last_R, R)
     last_R = R
     i += 1
@@ -97,24 +97,23 @@ while not found_eigen:
 # eig_val_L, eig_vec_L = np.linalg.eigh(L)
 # eig_vec_C = np.dot(A, eig_vec_L)
     
-print(Q_prod)
+print(eig_vec_C)
 print(R)
 print(i)
-sys.exit(0)
 
 # Ordenar autovectores de mayor a menor
-LEFT_RIGHT = 1
-flipped_eig_vec_C = np.flip(eig_vec_C, LEFT_RIGHT)
-for i in range(m):
-    flipped_eig_vec_C[:,i] /= np.linalg.norm(flipped_eig_vec_C[:,i])
+#LEFT_RIGHT = 1
+#flipped_eig_vec_C = np.flip(eig_vec_C, LEFT_RIGHT)
+#for i in range(m):
+#    flipped_eig_vec_C[:,i] /= np.linalg.norm(flipped_eig_vec_C[:,i])
 
-custom_eigen = (np.reshape(flipped_eig_vec_C[:,0],[versize,horsize]))*255
-fig_2, axes_2 = plt.subplots(1,1)
-axes_2.imshow(custom_eigen,cmap='gray')
-fig_2.suptitle('Custom autocara')
+#custom_eigen = (np.reshape(flipped_eig_vec_C[:,0],[versize,horsize]))*255
+#fig_2, axes_2 = plt.subplots(1,1)
+#axes_2.imshow(custom_eigen,cmap='gray')
+#fig_2.suptitle('Custom autocara')
 
-print(flipped_eig_vec_C[0,0])
-print(V[0,0])
+#print(flipped_eig_vec_C[0,0])
+#print(V[0,0])
 
 # imagescov = np.cov(np.transpose(images))
 # w, v = np.linalg.eig(imagescov)
@@ -129,6 +128,10 @@ print(V[0,0])
 #fig, axes = plt.subplots(1,1)
 #axes.imshow(eigen1prima,cmap='gray')
 #fig.suptitle('Primera autocara prima')
+eigen1c = (np.reshape(eig_vec_C[0,:],[versize,horsize]))*255
+fig, axes = plt.subplots(1,1)
+axes.imshow(eigen1c,cmap='gray')
+fig.suptitle('Primera autocara con GS')
 
 #Primera autocara...
 # reshape: Gives a new shape to an array without changing its data.
