@@ -145,9 +145,6 @@ fig, axes = plt.subplots(1,1)
 axes.imshow(eigen1,cmap='gray')
 fig.suptitle('Primera autocara')
 
-plt.show()
-
-sys.exit(0)
 
 eigen2 = (np.reshape(V[1,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)

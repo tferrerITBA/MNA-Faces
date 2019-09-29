@@ -9,6 +9,8 @@ from os.path import join, isdir
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
+import sys
+from gram_schmidt import gram_schmidt, cmp_eigen, gramschmidt
 
 mypath      = 'att_faces/'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
@@ -52,6 +54,7 @@ for dire in onlydirs:
     per += 1
 
 #KERNEL: polinomial de grado degree
+# d == degree
 degree = 2
 K = (np.dot(images,images.T)/trnno+1)**degree
 #K = (K + K.T)/2.0
@@ -67,12 +70,45 @@ w,alpha = np.linalg.eigh(K)
 lambdas = w/trnno
 lambdas = w
 
+
+A = K
+m,n = A.shape
+last_R = np.zeros(A.shape)
+eig_vec_L = 1
+found_eigen = False
+i = 0
+
+while not found_eigen:
+    Q, R = gram_schmidt(A)
+    A = np.dot(R, Q)
+    eig_vec_L = np.dot(eig_vec_L, Q)
+    found_eigen = cmp_eigen(last_R, R)
+    last_R = R
+    i += 1
+
+eig_vec_C = np.dot(A, eig_vec_L)
+
+for i in range(m):
+    eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
+
+sarasa = np.sort(np.diag(R))
+
+for col in range(eig_vec_C.shape[1]):
+    eig_vec_C[:,col] = eig_vec_C[:,col]/np.sqrt(sarasa[col])
+
+sys.exit(0)
+        
+lambdas = sarasa
+alpha = eig_vec_C
+
 #Los autovalores vienen en orden descendente. Lo cambio 
 lambdas = np.flipud(lambdas)
 alpha   = np.fliplr(alpha)
 
 for col in range(alpha.shape[1]):
     alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
+#for col in range(alpha.shape[1]):
+#    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 
 #pre-proyección
 improypre   = np.dot(K.T,alpha)
