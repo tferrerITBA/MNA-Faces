@@ -94,7 +94,9 @@ while not found_eigen:
     last_R = R
     i += 1
 
+
 #eig_val_L, eig_vec_L = np.linalg.eigh(L)
+
 eig_vec_C = np.dot(A, eig_vec_L)
     
 print(eig_vec_C)
@@ -143,9 +145,6 @@ fig, axes = plt.subplots(1,1)
 axes.imshow(eigen1,cmap='gray')
 fig.suptitle('Primera autocara')
 
-plt.show()
-
-sys.exit(0)
 
 eigen2 = (np.reshape(V[1,:],[versize,horsize]))*255
 fig, axes = plt.subplots(1,1)
