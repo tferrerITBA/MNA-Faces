@@ -158,24 +158,27 @@ fig.suptitle('Tercera autocara')
 
 nmax = V.shape[0]
 nmax = 100
-accs = np.zeros([nmax,1])
-for neigen in range(1,nmax):
+#accs = np.zeros([nmax,1])
+labels = np.zeros([tstno])
+
+neigen = nmax
+#for neigen in range(1,nmax):
     #Me quedo sólo con las primeras autocaras
-    B = V[0:neigen,:]
+B = V[0:neigen,:]
     #proyecto
-    improy      = np.dot(images,np.transpose(B))
-    imtstproy   = np.dot(imagetst,np.transpose(B))
+improy      = np.dot(images,np.transpose(B))
+imtstproy   = np.dot(imagetst,np.transpose(B))
         
     #SVM
     #entreno
-    clf = svm.LinearSVC()
-    clf.fit(improy,person.ravel())
-    accs[neigen] = clf.score(imtstproy,persontst.ravel())
-    print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
+clf = svm.LinearSVC()
+clf.fit(improy,person.ravel())
+labels = clf.predict(imtstproy)
+    #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
 
-fig, axes = plt.subplots(1,1)
-axes.semilogy(range(nmax),(1-accs)*100)
-axes.set_xlabel('No. autocaras')
-axes.grid(which='Both')
-fig.suptitle('Error')
+#fig, axes = plt.subplots(1,1)
+#axes.semilogy(range(nmax),(1-accs)*100)
+#axes.set_xlabel('No. autocaras')
+#axes.grid(which='Both')
+#fig.suptitle('Error')
 
