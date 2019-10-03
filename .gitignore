@@ -103,8 +103,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# Images
-att_faces/
-
 #Para macs
 .DS_Store
