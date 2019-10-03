@@ -1,6 +1,6 @@
 import numpy as np
 
-EPSILON = 1e-3
+EPSILON = 1e-1
 
 
 def gram_schmidt(A):
@@ -30,6 +30,7 @@ def gram_schmidt(A):
 def cmp_eigen(old_R, new_R):
     for i in range(0, old_R.shape[0]):
         if abs(old_R[i][i] - new_R[i][i]) > EPSILON:
+            print(abs(old_R[i][i] - new_R[i][i]))
             return False
 
     return True

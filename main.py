@@ -5,10 +5,13 @@ Created on Wed Oct  2 14:41:01 2019
 @author: Marcos
 """
 import cv2
-import sys
+from facespca import image_training, input_testing_pca
+#import sys
 
-#faceCascade = cv2.CascadeClassifier('C:\\Users\\Marcos\\Anaconda3\\Lib\\site-packages\\cv2\data\\haarcascade_frontalface_default.xml')
-#faceCascade = sys.argv[0]
+print('Training in progress...')
+training = image_training()
+print('Training ready.')
+
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
 video_capture = cv2.VideoCapture(1)
@@ -34,16 +37,23 @@ while True:
         if cmd==ord('s'):
             i = 0
             for (x, y, w, h) in faces:
-                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-                roi_color = frame[y:y + h, x:x + w] 
+                new_h = int(1.1 * h)
+                h_padd = int(0.3*h)
+                #cv2.rectangle(frame, (x, y), (x+w, y+new_h), (0, 255, 0), 2)
+                face_img = gray[y-h_padd:y + new_h, x:x + w]
+                face_img = cv2.resize(face_img, (92, 112))
+                #gray_image = cv2.cvtColor(roi_color, cv2.COLOR_BGR2GRAY)
                 print("[INFO] Object found. Saving locally.") 
-                cv2.imwrite('detected_faces/faces_' + str(i) + '.pgm', roi_color, cv2.CV_IMWRITE_PGM_BINARY )
+                cv2.imwrite('detected_faces/faces_' + str(i) + '.pgm', face_img )
+                input_testing_pca(training, face_img)
                 i+= 1
         elif cmd==ord('e'):
             break
         else:
             for (x, y, w, h) in faces:
-                    cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                new_h = int(1.1 * h)
+                h_padd = int(0.3*h)
+                cv2.rectangle(frame, (x, y-h_padd), (x+w, y+new_h), (0, 255, 0), 2)
         #status = cv2.imwrite('faces_detected.jpg', frame)
 
         # Display the resulting frame
