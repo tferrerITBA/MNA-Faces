@@ -6,12 +6,14 @@ Created on Sun Jul  2 16:32:14 2017
 """
 from os import listdir
 from os.path import join, isdir
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
 from gram_schmidt import gram_schmidt, cmp_eigen
 
 mypath      = 'att_faces/'
+trained_path= 'eigenfaces_kpca.txt'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
 
 #image size
@@ -26,6 +28,11 @@ tstperper   = 1
 trnno       = personno*trnperper
 
 def image_training_kpca():
+    trained = Path(trained_path)
+    if(trained.is_file()):
+        print('Loaded {}'.format(trained_path))
+        return np.loadtxt(trained_path)
+
     #TRAINING SET
     images = np.zeros([trnno,areasize])
     person = np.zeros([trnno,1])
@@ -77,7 +84,8 @@ def image_training_kpca():
     
     for col in range(eig_vec_K.shape[1]):
         eig_vec_K[:,col] = eig_vec_K[:,col]/np.sqrt(R[col, col])
-    
+
+    np.savetxt(trained_path, eig_vec_K, fmt='%s')
     return eig_vec_K
 
 #Los autovalores vienen en orden descendente. Lo cambio 

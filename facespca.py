@@ -6,12 +6,14 @@ Created on Sun Jul  2 16:32:14 2017
 """
 from os import listdir
 from os.path import join, isdir
+from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn import svm
 from gram_schmidt import gram_schmidt, cmp_eigen
 
 mypath      = 'att_faces/'
+trained_path= 'eigenfaces_pca.txt'
 onlydirs    = [f for f in listdir(mypath) if isdir(join(mypath, f))]
 
 #image size
@@ -25,6 +27,11 @@ trnperper   = 6
 trnno = personno*trnperper
 
 def image_training_pca():
+    trained = Path(trained_path)
+    if(trained.is_file()):
+        print('Loaded {}'.format(trained_path))
+        return np.loadtxt(trained_path)
+
     #TRAINING SET
     images = np.zeros([trnno,areasize])
     person = np.zeros([trnno,1])
@@ -77,7 +84,8 @@ def image_training_pca():
     
     for i in range(m):
         eig_vec_C[:,i] /= np.linalg.norm(eig_vec_C[:,i])
-    
+
+    np.savetxt(trained_path, eig_vec_C, fmt = '%s')
     return eig_vec_C
     
 

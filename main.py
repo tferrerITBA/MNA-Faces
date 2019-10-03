@@ -34,7 +34,10 @@ names = create_name_dict()
 
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-video_capture = cv2.VideoCapture(1)
+video_capture = cv2.VideoCapture(0)
+if(video_capture is None or not video_capture.isOpened()):
+    video_capture = cv2.VideoCapture(1)
+
 print(video_capture.isOpened())
 while True:
 
