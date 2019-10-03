@@ -279,4 +279,5 @@ def input_testing_pca(training, input_image):
     clf.fit(improy, person.ravel())
     labels = clf.predict(imtstproy)
         #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
-    print(labels)
+    #print(labels)
+    return labels[0]

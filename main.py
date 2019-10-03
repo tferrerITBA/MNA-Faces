@@ -6,11 +6,19 @@ Created on Wed Oct  2 14:41:01 2019
 """
 import cv2
 from facespca import image_training, input_testing_pca
+from names import create_name_dict
 #import sys
+
+font                   = cv2.FONT_HERSHEY_SIMPLEX
+fontScale              = 1
+fontColor              = (255,255,255)
+lineType               = 2
 
 print('Training in progress...')
 training = image_training()
 print('Training ready.')
+
+names = create_name_dict()
 
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
@@ -33,8 +41,8 @@ while True:
         )
 
         # Draw a rectangle around the faces
-        cmd = cv2.waitKey(1)
-        if cmd==ord('s'):
+        cmd = cv2.waitKey(50)
+        if cmd==ord('r'):
             i = 0
             for (x, y, w, h) in faces:
                 new_h = int(1.1 * h)
@@ -43,10 +51,18 @@ while True:
                 face_img = gray[y-h_padd:y + new_h, x:x + w]
                 face_img = cv2.resize(face_img, (92, 112))
                 #gray_image = cv2.cvtColor(roi_color, cv2.COLOR_BGR2GRAY)
-                print("[INFO] Object found. Saving locally.") 
-                cv2.imwrite('detected_faces/faces_' + str(i) + '.pgm', face_img )
-                input_testing_pca(training, face_img)
+                #print("[INFO] Object found. Saving locally.") 
+                #cv2.imwrite('detected_faces/faces_' + str(i) + '.pgm', face_img )
+                label = input_testing_pca(training, face_img)
+                name = names[label]
+                if name is None:
+                    name = 'Unknown'
+                #print(name)
+                cv2.putText(frame, name, (x, y-h_padd), font, fontScale, fontColor, lineType)
                 i+= 1
+            # Display the resulting frame
+            cv2.imshow('Video', frame)
+            cv2.waitKey(1000)
         elif cmd==ord('e'):
             break
         else:
@@ -54,10 +70,10 @@ while True:
                 new_h = int(1.1 * h)
                 h_padd = int(0.3*h)
                 cv2.rectangle(frame, (x, y-h_padd), (x+w, y+new_h), (0, 255, 0), 2)
-        #status = cv2.imwrite('faces_detected.jpg', frame)
+                # Display the resulting frame
+                cv2.imshow('Video', frame)
 
-        # Display the resulting frame
-        cv2.imshow('Video', frame)
+        #status = cv2.imwrite('faces_detected.jpg', frame)
 
         #if cv2.waitKey(10)==ord('e'):
          #   break
