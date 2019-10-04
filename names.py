@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Oct  3 01:39:01 2019
-
-@author: Marcos
-"""
 
 def create_name_dict():
     d = {}

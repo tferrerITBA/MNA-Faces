@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  2 16:32:14 2017
 
-@author: pfierens
-"""
 from os import listdir
 from os.path import join, isdir
 from pathlib import Path
@@ -50,26 +46,16 @@ def image_training_kpca():
     # d == degree
     degree = 2
     K = (np.dot(images,images.T)/trnno+1)**degree
-    #K = (K + K.T)/2.0
             
     #esta transformación es equivalente a centrar las imágenes originales...
     unoM = np.ones([trnno,trnno])/trnno
-    K = K - np.dot(unoM,K) - np.dot(K,unoM) + np.dot(unoM,np.dot(K,unoM))
-    
-    
-    # Autovalores y autovectores (w = eigenvalues, alpha = eigenvectors in columns)
-    # eigh: Return the eigenvalues and eigenvectors of a Hermitian or symmetric matrix
-    #w,alpha = np.linalg.eigh(K)
-    #lambdas = w/trnno
-    #lambdas = w
-    
+    K = K - np.dot(unoM,K) - np.dot(K,unoM) + np.dot(unoM,np.dot(K,unoM))    
     
     A = np.copy(K)
     m,n = A.shape
     last_R = np.zeros(A.shape)
     eig_vec_K = 1
     found_eigen = False
-    i = 0
     
     while not found_eigen:
         Q, R = gram_schmidt(A)
@@ -77,7 +63,6 @@ def image_training_kpca():
         eig_vec_K = np.dot(eig_vec_K, Q)
         found_eigen = cmp_eigen(last_R, R)
         last_R = R
-        i += 1
     
     for i in range(m):
         eig_vec_K[:,i] /= np.linalg.norm(eig_vec_K[:,i])
@@ -86,14 +71,8 @@ def image_training_kpca():
         eig_vec_K[:,col] = eig_vec_K[:,col]/np.sqrt(R[col, col])
 
     np.savetxt(trained_path, eig_vec_K, fmt='%s')
+    
     return eig_vec_K
-
-#Los autovalores vienen en orden descendente. Lo cambio 
-#lambdas = np.flipud(lambdas)
-#alpha   = np.fliplr(alpha)
-
-#for col in range(alpha.shape[1]):
-#    alpha[:,col] = alpha[:,col]/np.sqrt(lambdas[col])
 
 def batch_testing_kpca(eigenfaces):
     #TRAINING SET
@@ -119,7 +98,7 @@ def batch_testing_kpca(eigenfaces):
         for k in range(trnperper+1,11):
             a = plt.imread(mypath + dire + '/{}'.format(k) + '.pgm')
             imagetst[imno,:]  = (np.reshape(a,[1,areasize])-127.5)/127.5
-            persontst[imno,0] = per
+            persontst[imno,0] = dire.split('s')[1]
             imno += 1
         per += 1
     
@@ -127,7 +106,6 @@ def batch_testing_kpca(eigenfaces):
     # d == degree
     degree = 2
     K = (np.dot(images,images.T)/trnno+1)**degree
-    #K = (K + K.T)/2.0
             
     #esta transformación es equivalente a centrar las imágenes originales...
     unoM = np.ones([trnno,trnno])/trnno
@@ -140,38 +118,19 @@ def batch_testing_kpca(eigenfaces):
     Ktest       = Ktest - np.dot(unoML,K) - np.dot(Ktest,unoM) + np.dot(unoML,np.dot(K,unoM))
     imtstproypre= np.dot(Ktest,eigenfaces)
     
-    #from sklearn.decomposition import KernelPCA
-    
-    #kpca = KernelPCA(n_components = None, kernel='poly', degree=2, gamma = 1, coef0 = 0)
-    #kpca = KernelPCA(n_components = None, kernel='poly', degree=2)
-    #kpca.fit(images)
-    
-    #improypre = kpca.transform(images)
-    #imtstproypre = kpca.transform(imagetst)
-    
     nmax = eigenfaces.shape[1]
     nmax = 100
-    #accs = np.zeros([nmax,1])
-    #for neigen in range(1,nmax):
-        #Me quedo sólo con las primeras autocaras   
-        #proyecto
+    #Me quedo sólo con las primeras autocaras   
+    #proyecto
     improy      = improypre[:,0:nmax]
     imtstproy   = imtstproypre[:,0:nmax]
             
-        #SVM
-        #entreno
+    #SVM
+    #entreno
     clf = svm.LinearSVC()
     clf.fit(improy,person.ravel())
     labels = clf.predict(imtstproy)
     print(labels)
-        #accs[neigen] = clf.score(imtstproy,persontst.ravel())
-        #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
-
-    #fig, axes = plt.subplots(1,1)
-    #axes.semilogy(range(nmax),(1-accs)*100)
-    #axes.set_xlabel('No. autocaras')
-    #axes.grid(which='Both')
-    #fig.suptitle('Error')
 
 def input_testing_kpca(eigenfaces, input_image):
     #TRAINING SET
@@ -190,22 +149,13 @@ def input_testing_kpca(eigenfaces, input_image):
     #TEST SET
     tstno       = 1
     imagetst  = np.zeros([tstno,areasize])
-    #persontst = np.zeros([tstno,1])
     imno = 0
-    #per  = 0
-    #for dire in onlydirs:
-        #for k in range(trnperper+1,11):
-            #a = plt.imread(mypath + dire + '/{}'.format(k) + '.pgm')
     imagetst[imno,:]  = (np.reshape(input_image,[1,areasize])-127.5)/127.5
-            #persontst[imno,0] = per
-            #imno += 1
-        #per += 1
     
     #KERNEL: polinomial de grado degree
     # d == degree
     degree = 2
     K = (np.dot(images,images.T)/trnno+1)**degree
-    #K = (K + K.T)/2.0
             
     #esta transformación es equivalente a centrar las imágenes originales...
     unoM = np.ones([trnno,trnno])/trnno
@@ -218,36 +168,15 @@ def input_testing_kpca(eigenfaces, input_image):
     Ktest       = Ktest - np.dot(unoML,K) - np.dot(Ktest,unoM) + np.dot(unoML,np.dot(K,unoM))
     imtstproypre= np.dot(Ktest,eigenfaces)
     
-    #from sklearn.decomposition import KernelPCA
-    
-    #kpca = KernelPCA(n_components = None, kernel='poly', degree=2, gamma = 1, coef0 = 0)
-    #kpca = KernelPCA(n_components = None, kernel='poly', degree=2)
-    #kpca.fit(images)
-    
-    #improypre = kpca.transform(images)
-    #imtstproypre = kpca.transform(imagetst)
-    
     nmax = eigenfaces.shape[1]
     nmax = 100
-    #accs = np.zeros([nmax,1])
-    #for neigen in range(1,nmax):
-        #Me quedo sólo con las primeras autocaras   
-        #proyecto
     improy      = improypre[:,0:nmax]
     imtstproy   = imtstproypre[:,0:nmax]
             
-        #SVM
-        #entreno
+    #SVM
+    #entreno
     clf = svm.LinearSVC()
     clf.fit(improy,person.ravel())
     labels = clf.predict(imtstproy)
-    #print(labels)
-        #accs[neigen] = clf.score(imtstproy,persontst.ravel())
-        #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
 
-    #fig, axes = plt.subplots(1,1)
-    #axes.semilogy(range(nmax),(1-accs)*100)
-    #axes.set_xlabel('No. autocaras')
-    #axes.grid(which='Both')
-    #fig.suptitle('Error')
     return labels[0]

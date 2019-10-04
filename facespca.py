@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Jul  2 16:32:14 2017
 
-@author: pfierens
-"""
 from os import listdir
 from os.path import join, isdir
 from pathlib import Path
@@ -52,9 +48,6 @@ def image_training_pca():
     #CARA MEDIA
     #Mean for pixel i using 'images' columns
     meanimage = np.mean(images,0)
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(np.reshape(meanimage,[versize,horsize])*255,cmap='gray')
-    #fig.suptitle('Imagen media')
     
     #resto la media
     images  = [images[k,:]-meanimage for k in range(images.shape[0])]
@@ -67,7 +60,6 @@ def image_training_pca():
     last_R = np.zeros(A.shape)
     eig_vec_L = 1
     found_eigen = False
-    i = 0
     
     while not found_eigen:
         Q, R = gram_schmidt(L)
@@ -75,10 +67,6 @@ def image_training_pca():
         eig_vec_L = np.dot(eig_vec_L, Q)
         found_eigen = cmp_eigen(last_R, R)
         last_R = R
-        i += 1
-    
-    
-    #eig_val_L, eig_vec_L = np.linalg.eigh(L)
     
     eig_vec_C = np.dot(A, eig_vec_L)
     
@@ -106,7 +94,6 @@ def batch_testing_pca(eigenfaces):
             person[imno,0] = dire.split('s')[1]
             imno += 1
         per += 1
-    #eigenfaces = np.reshape(eigenfaces,[areasize,trnno])
     
     tstperper   = 4
     tstno       = personno*tstperper
@@ -127,56 +114,26 @@ def batch_testing_pca(eigenfaces):
     #CARA MEDIA
     #Mean for pixel i using 'images' columns
     meanimage = np.mean(images,0)
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(np.reshape(meanimage,[versize,horsize])*255,cmap='gray')
-    #fig.suptitle('Imagen media')
     
     #resto la media
     imagetst= [imagetst[k,:]-meanimage for k in range(imagetst.shape[0])]
     
-    #Primera autocara...
-    # reshape: Gives a new shape to an array without changing its data.
-    #eigen1 = (np.reshape(V[0,:],[versize,horsize]))*255
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(eigen1,cmap='gray')
-    #fig.suptitle('Primera autocara')
-    
-    
-    #eigen2 = (np.reshape(V[1,:],[versize,horsize]))*255
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(eigen2,cmap='gray')
-    #fig.suptitle('Segunda autocara')
-    
-    #eigen3 = (np.reshape(V[2,:],[versize,horsize]))*255
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(eigen2,cmap='gray')
-    #fig.suptitle('Tercera autocara')
-    
-    #nmax = V.shape[0]
     nmax = 100
-    #accs = np.zeros([nmax,1])
     labels = np.zeros([tstno])
     
     neigen = nmax
-    #for neigen in range(1,nmax):
-        #Me quedo sólo con las primeras autocaras
+    #Me quedo sólo con las primeras autocaras
     B = eigenfaces[:,0:neigen]
     #proyecto
     improy      = np.dot(images,B)
     imtstproy   = np.dot(imagetst,B)
             
-        #SVM
-        #entreno
+    #SVM
+    #entreno
     clf = svm.LinearSVC()
     clf.fit(improy, person.ravel())
     labels = clf.predict(imtstproy)
-        #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
     print(labels)
-    #fig, axes = plt.subplots(1,1)
-    #axes.semilogy(range(nmax),(1-accs)*100)
-    #axes.set_xlabel('No. autocaras')
-    #axes.grid(which='Both')
-    #fig.suptitle('Error')
     
 def input_testing_pca(eigenfaces, input_image):
     #TRAINING SET
@@ -195,7 +152,6 @@ def input_testing_pca(eigenfaces, input_image):
             person[imno,0] = dire.split('s')[1]
             imno += 1
         per += 1
-    #eigenfaces = np.reshape(eigenfaces,[areasize,trnno])
     
     tstno       = 1
         
@@ -207,36 +163,27 @@ def input_testing_pca(eigenfaces, input_image):
     a = input_image/255.0
     #Reshape to vector for insertion in 'images'
     imagetst[imno,:]  = np.reshape(a,[1,areasize])
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(np.reshape(imagetst[0,:],[versize,horsize])*255,cmap='gray')
         
     #CARA MEDIA
     #Mean for pixel i using 'images' columns
     meanimage = np.mean(images,0)
-    #fig, axes = plt.subplots(1,1)
-    #axes.imshow(np.reshape(meanimage,[versize,horsize])*255,cmap='gray')
-    #fig.suptitle('Imagen media')
     
     #resto la media
     imagetst= [imagetst[k,:]-meanimage for k in range(imagetst.shape[0])]
     
     nmax = 100
-    #accs = np.zeros([nmax,1])
     labels = np.zeros([tstno])
     
-    neigen = nmax
-    #for neigen in range(1,nmax):
-        #Me quedo sólo con las primeras autocaras
-    B = eigenfaces[:,0:neigen]
+    #Me quedo sólo con las primeras autocaras
+    B = eigenfaces[:,0:nmax]
     #proyecto
     improy      = np.dot(images,B)
     imtstproy   = np.dot(imagetst,B)
             
-        #SVM
-        #entreno
+    #SVM
+    #entreno
     clf = svm.LinearSVC()
     clf.fit(improy, person.ravel())
     labels = clf.predict(imtstproy)
-        #print('Precisión con {0} autocaras: {1} %\n'.format(neigen,accs[neigen]*100))
-    #print(labels)
+    
     return labels[0]

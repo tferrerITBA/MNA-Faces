@@ -1,6 +1,6 @@
 import numpy as np
 
-EPSILON = 1e-1
+EPSILON = 1e-2
 
 
 def gram_schmidt(A):
@@ -17,14 +17,6 @@ def gram_schmidt(A):
             A[0:m, j] = A[0:m, j] - np.dot(Q[0:m, k], R[k, j])
 
     return Q, R
-
-
-# A = np.array([[8., -2., 1.], [-1., 4., 0.], [1., -1., 2.]])
-# for i in range(100):
-#     Q,R = gram_schmidt(A)
-#     A = np.dot(R, Q)
-#
-# print(Q)
 
 
 def cmp_eigen(old_R, new_R):

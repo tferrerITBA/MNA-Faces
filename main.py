@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Oct  2 14:41:01 2019
 
-@author: Marcos
-"""
 import cv2
 from facespca import image_training_pca, input_testing_pca
 from faceskernelpca import image_training_kpca, input_testing_kpca
@@ -38,7 +34,7 @@ video_capture = cv2.VideoCapture(0)
 if(video_capture is None or not video_capture.isOpened()):
     video_capture = cv2.VideoCapture(1)
 
-print(video_capture.isOpened())
+
 while True:
 
     ret, frame = video_capture.read()
